@@ -16,6 +16,9 @@
             color: rgb(1, 1, 138);
 
         }
+        .btn {
+            width: 45%;
+        }
     </style>
 </head>
 
@@ -27,21 +30,23 @@
             <p><strong>Patente:</strong> <span id="patente"></span>
                 <strong>Rut:</strong> <span id="conductor"></span>
             </p>
-            <button id="traerDatos" class="btn btn-primary ">leer datos</button>
+          <div class="botonera" style="display: flex; justify-content:space-between;">
+            <button id="traerDatos" class="btn btn-primary">Leer datos</button>
+            <button id="imprimir" class="btn btn-secondary">Imprimir</button>
+          </div>
         </div>
 
         <div class="card mt-3">
             <div class="card-body">
-                <p>Fecha :</p>
-                <p id="nombre">Nombre :</p>
-                <p id="rut">Rut :</p>
-                <p id="pat">Patente :</p>
-                <p>Estado :</p>
-                <p>Velocidades :</p>
+                <p>Fecha:</p>
+                <p id="nombre">Nombre:</p>
+                <p id="rut">Rut:</p>
+                <p id="pat">Patente:</p>
+                <p>Estado:</p>
+                <p id="velocidades">Velocidades:</p>
                 <hr>
-                <p>hora:</p>
-                <p>Velocidad:</p>
-
+                <p id="hora"></p>
+               
             </div>
         </div>
 
@@ -52,10 +57,8 @@
             // Función para obtener parámetros de la URL
             function getParameterByName(name) {
                 var url = new URL(window.location.href);
-                console.log(url);
                 return url.searchParams.get(name);
             }
-
 
             // Captura los parámetros "patente" y "conductor" de la URL
             var patente = getParameterByName('patente');
@@ -65,21 +68,67 @@
             $('#patente').text(patente);
             $('#conductor').text(conductor);
 
+            // Obtener y mostrar el nombre del conductor
             $.ajax({
                 url: "https://control-jornada.wit.la/backend-control-jornada/public/api/driver/name/" + conductor,
                 method: "GET",
                 dataType: "json",
                 success: function (dato) {
-                    nombre = dato.nombre;
+                    var nombre = dato.nombre;
                     $('#nombre').text(nombre);
                     $('#rut').text(conductor);
                     $('#pat').text(patente);
                 }
             });
 
-        });
+            // Asociar la función al botón para traer datos de la API y agregarlos a la tarjeta
+            $('#traerDatos').on('click', function () {
+                $.ajax({
+                    url: "https://control-jornada.wit.la/backend-control-jornada/public/api/gpshist/" + patente,
+                    method: "GET",
+                    dataType: "json",
+                    success: function (data) {
+                        if (data.success == false || !data.report.sheets[0].sections[0].data) {
 
- 
+                            $('#hora').text('No hay datos patra el período solicitado!!');
+                            
+
+                        }else{
+                            var logs = data.report.sheets[0].sections[0].data[0].rows.reverse();
+
+                            // Limpiar el contenido anterior
+                            $('#hora').text('');
+                          
+                           
+
+                            // Mostrar los datos obtenidos de la API en la tarjeta
+                            logs.forEach(function (log) {
+
+                                var fecha = log.date.v.split(" ")[1];
+                                var speed = log.speed.v;
+                               // $('#hora').append(` <p> ${fecha}    ,    ${speed} km/h  </p>`);
+                                 $('#hora').append('<p>Hora:'+fecha +' ,     Velocidad: '+speed+'km/hr </p>');
+
+
+                            });
+                           
+                        }
+
+                    }
+                });
+            });
+
+            $('#imprimir').click(imprimir);
+       
+                
+   
+
+            function imprimir(){
+                alert("hola");
+                window.location='printerplus://send?text='+document.getElementById('hora').innerHTML;
+
+            }
+        });
     </script>
     <!-- Bootstrap JS and dependencies -->
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
