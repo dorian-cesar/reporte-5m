@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reporte de Conducción (5min)</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <style>
+        .container {
+            width: 375px;
+            margin: auto;
+            color: rgb(1, 1, 138);
+
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <img src="Logo.svg" alt="">
+        <h3>Reporte de Conducción (5min)</h3>
+        <div class="mt-4">
+            <p><strong>Patente:</strong> <span id="patente"></span>
+                <strong>Rut:</strong> <span id="conductor"></span>
+            </p>
+            <button id="traerDatos" class="btn btn-primary ">leer datos</button>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-body">
+                <p>Fecha :</p>
+                <p id="nombre">Nombre :</p>
+                <p id="rut">Rut :</p>
+                <p id="pat">Patente :</p>
+                <p>Estado :</p>
+                <p>Velocidades :</p>
+                <hr>
+                <p>hora:</p>
+                <p>Velocidad:</p>
+
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            // Función para obtener parámetros de la URL
+            function getParameterByName(name) {
+                var url = new URL(window.location.href);
+                console.log(url);
+                return url.searchParams.get(name);
+            }
+
+
+            // Captura los parámetros "patente" y "conductor" de la URL
+            var patente = getParameterByName('patente');
+            var conductor = getParameterByName('conductor');
+
+            // Muestra los valores en el HTML
+            $('#patente').text(patente);
+            $('#conductor').text(conductor);
+
+            $.ajax({
+                url: "https://control-jornada.wit.la/backend-control-jornada/public/api/driver/name/" + conductor,
+                method: "GET",
+                dataType: "json",
+                success: function (dato) {
+                    nombre = dato.nombre;
+                    $('#nombre').text(nombre);
+                    $('#rut').text(conductor);
+                    $('#pat').text(patente);
+                }
+            });
+
+        });
+
+ 
+    </script>
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
