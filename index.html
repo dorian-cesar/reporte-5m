@@ -40,6 +40,7 @@
                 <p id="rut">Rut: </p>
                 <p id="pat">Patente: </p>
                 <p id="estado">Estado: </p>
+                <p id="freport">Fecha reporte: </p>
                 <p id="velocidades">Velocidades:</p>
                 <hr>
                 <p id="hora"></p>
@@ -101,6 +102,7 @@
 
                             // Limpiar el contenido anterior
                             $('#estado').append(logs[0].status.v);
+                            $("#freport").append(data.report.created);
 
 
 
@@ -130,8 +132,8 @@
 
 
             function imprimir() {
-                alert("hola");
-                window.location = 'printerplus://send?text=' + document.getElementById('hora').innerHTML;
+                alert("impresion");
+                window.location = 'printerplus://send?text=' + document.getElementById('reporte').innerHTML;
 
             }
         });
