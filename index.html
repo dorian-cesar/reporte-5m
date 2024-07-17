@@ -16,6 +16,23 @@
             color: rgb(1, 1, 138);
 
         }
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 2s linear infinite;
+           display: none;
+            margin: auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+
     </style>
 </head>
 
@@ -31,6 +48,9 @@
                 <button id="traerDatos" class="btn btn-primary">Leer datos</button>
                 <button id="imprimir" class="btn btn-secondary">Imprimir</button>
             </div>
+        </div>
+        <div class="loader-container" >
+            <div class="loader" id="loader"></div>
         </div>
 
         <div class="card mt-3">
@@ -54,6 +74,7 @@
 
     <script>
         $(document).ready(function () {
+           
             // Función para obtener parámetros de la URL
             function getParameterByName(name) {
                 var url = new URL(window.location.href);
@@ -82,6 +103,8 @@
 
             // Asociar la función al botón para traer datos de la API y agregarlos a la tarjeta
             $('#traerDatos').on('click', function () {
+
+                $("#loader").show();
                 $.ajax({
                     url: "https://control-jornada.wit.la/backend-control-jornada/public/api/gpshist/" + patente,
                     method: "GET",
@@ -95,9 +118,10 @@
                         if (data.success == false || !data.report.sheets[0].sections[0].data) {
 
                             $('#hora').text('No hay datos patra el período solicitado!!');
-
+                            $("#loader").hide();
 
                         } else {
+                            $("#loader").hide();
                             var logs = data.report.sheets[0].sections[0].data[0].rows.reverse();
 
                             // Limpiar el contenido anterior
